@@ -125,8 +125,8 @@ class ETLCompetitions:
             if (
                     is_new and
                     (row['date'] < (date.today() - timedelta(days=6))) and
-                    row['home_score'] and
-                    row['xg_home'] # TODO
+                    row['home_score'] #and
+                    #row['xg_home'] # TODO
             ):
 
                 count += 1
@@ -154,31 +154,49 @@ class ETLCompetitions:
 
                 # EXTRACT
                 match_soup = ph.read_site(row['match_report'])
-                shots_extracted = ph.scrap_shots(match_soup, match_id)
-                goalkeeper_stats_extracted = ph.scrap_goalkeeper_stats(match_soup, match_id)
+                try:
+                    shots_extracted = ph.scrap_shots(match_soup, match_id)
+                    goalkeeper_stats_extracted = ph.scrap_goalkeeper_stats(match_soup, match_id)
+                except:
+                    pass
                 player_stats_extracted_dict = dict()
                 for table_number, table_name in PlayerStats_table_names_dict.items():
-                    player_stats_extracted_dict[table_name] = ph.scrap_players_stats(
-                        match_soup=match_soup,
-                        home_team=row['home_team'],
-                        away_team=row['away_team'],
-                        table_number=table_number,
-                        match_id=match_id,
-                        home_team_id=row['home_team_id'],
-                        away_team_id=row['away_team_id']
-                    )
+                    try:
+                        player_stats_extracted_dict[table_name] = ph.scrap_players_stats(
+                            match_soup=match_soup,
+                            home_team=row['home_team'],
+                            away_team=row['away_team'],
+                            table_number=table_number,
+                            match_id=match_id,
+                            home_team_id=row['home_team_id'],
+                            away_team_id=row['away_team_id']
+                        )
+                    except:
+                        pass
+
+
 
                 # TRANSFORM
-                shots_transformed = tf.transform_shots(shots_extracted)
-                goalkeeper_stats_transformed = tf.transform_goalkeeper_stats(goalkeeper_stats_extracted)
+                try:
+                    shots_transformed = tf.transform_shots(shots_extracted)
+                    goalkeeper_stats_transformed = tf.transform_goalkeeper_stats(goalkeeper_stats_extracted)
+                except:
+                    shots_transformed = pd.DataFrame()
+                    goalkeeper_stats_transformed = pd.DataFrame()
                 player_stats_transformed_dict = dict()
                 for table_number, table_name in PlayerStats_table_names_dict.items():
-                    if table_name == 'fbref.PlayerStatsSummary':
-                        player_stats_transformed_dict[table_name] = \
-                            tf.transform_summary(player_stats_extracted_dict[table_name])
-                    else:
-                        player_stats_transformed_dict[table_name] = \
-                            tf.transform_stat_player(player_stats_extracted_dict[table_name])
+                    try:
+                        if table_name == 'fbref.PlayerStatsSummary':
+                            player_stats_transformed_dict[table_name] = \
+                                tf.transform_summary(player_stats_extracted_dict[table_name])
+                        else:
+                            try:
+                                player_stats_transformed_dict[table_name] = \
+                                tf.transform_stat_player(player_stats_extracted_dict[table_name])
+                            except:
+                                player_stats_transformed_dict[table_name] = pd.DataFrame()
+                    except:
+                        pass
 
                 # LOAD
 
@@ -261,7 +279,10 @@ class ETLCompetitions:
                 ]
 
                 for table in loads:
-                    load_player_stats(**table)
+                    try:
+                        load_player_stats(**table)
+                    except:
+                        pass
 
                 self.commit_database()
 

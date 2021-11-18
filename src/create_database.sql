@@ -1,11 +1,6 @@
-CREATE DATABASE football;
-GO
-
-USE football;
-GO
+--CREATE DATABASE football;
 
 CREATE SCHEMA fbref;
-GO
 
 CREATE TABLE fbref.Competitions
 (
@@ -24,15 +19,15 @@ CREATE TABLE fbref.Matches
     id             INT          NOT NULL,
     gameweek       INT                  ,
     dayofweek      VARCHAR(30)          ,
-    date           DATETIME2            ,
+    date           DATE                 ,
     time           VARCHAR(30)          ,
     home_team_id   VARCHAR(50)          ,
     home_team      VARCHAR(30)          ,
     home_team_country VARCHAR(10)       ,
-    xg_home        FLOAT(2)             ,
+    xg_home        REAL                 ,
     home_score     INT                  ,
     away_score     INT                  ,
-    xg_away        FLOAT(2)             ,
+    xg_away        REAL                 ,
     away_team_id   VARCHAR(50)          ,
     away_team      VARCHAR(30)          ,
     away_team_country VARCHAR(10)       ,
@@ -61,7 +56,7 @@ CREATE TABLE fbref.PlayerStatsSummary
     match_id                INT          NOT NULL,
     shirtnumber             INT                  ,
     position                VARCHAR(20)          ,
-    age                     FLOAT(4)             ,
+    age                     REAL                 ,
     minutes                 INT                  ,
     first_squad             BIT          NOT NULL,
     goals                   INT                  ,
@@ -77,14 +72,14 @@ CREATE TABLE fbref.PlayerStatsSummary
     tackles                 INT                  ,
     interceptions           INT                  ,
     blocks                  INT                  ,
-    xg                      FLOAT(2)             ,
-    npxg                    FLOAT(2)             ,
-    xa                      FLOAT(2)             ,
+    xg                      REAL                 ,
+    npxg                    REAL                 ,
+    xa                      REAL                 ,
     sca                     INT                  ,
     gca                     INT                  ,
     passes_completed        INT                  ,
     passes                  INT                  ,
-    passes_pct              FLOAT(3)             ,
+    passes_pct              REAL                 ,
     progressive_passes      INT                  ,
     carries                 INT                  ,
     progressive_carries     INT                  ,
@@ -105,20 +100,20 @@ CREATE TABLE fbref.PlayerStatsPassing
     match_id                        INT          NOT NULL,
     passes_completed                INT                 ,
     passes                          INT                 ,
-    passes_pct                      FLOAT(3)            ,
+    passes_pct                      REAL                ,
     passes_total_distance           INT                 ,
     passes_progressive_distance     INT                 ,
     passes_completed_short          INT                 ,
     passes_short                    INT                 ,
-    passes_pct_short                FLOAT(3)            ,
+    passes_pct_short                REAL                ,
     passes_completed_medium         INT                 ,
     passes_medium                   INT                 ,
-    passes_pct_medium               FLOAT(3)            ,
+    passes_pct_medium               REAL                ,
     passes_completed_long           INT                 ,
     passes_long                     INT                 ,
-    passes_pct_long                 FLOAT(3)            ,
+    passes_pct_long                 REAL                ,
     assists                         INT                 ,
-    xa                              FLOAT(2)            ,
+    xa                              REAL                ,
     assisted_shots                  INT                 ,
     passes_into_final_third         INT                 ,
     passes_into_penalty_area        INT                 ,
@@ -144,7 +139,7 @@ CREATE TABLE fbref.PlayerStatsPossession
     touches_live_ball               INT                 ,
     dribbles_completed              INT                 ,
     dribbles                        INT                 ,
-    dribbles_completed_pct          FLOAT(3)            ,
+    dribbles_completed_pct          REAL                ,
     players_dribbled_past           INT                 ,
     nutmegs                         INT                 ,
     carries                         INT                 ,
@@ -157,7 +152,7 @@ CREATE TABLE fbref.PlayerStatsPossession
     dispossessed                    INT                 ,
     pass_targets                    INT                 ,
     passes_received                 INT                 ,
-    passes_received_pct             FLOAT(3)            ,
+    passes_received_pct             REAL                ,
     progressive_passes_received     INT                 ,
     CONSTRAINT PK_PlayerStatsPossession
         PRIMARY KEY (player_id, match_id)               ,
@@ -168,7 +163,7 @@ CREATE TABLE fbref.PlayerStatsPossession
 
 CREATE TABLE fbref.Shots
 (
-    id                  INT    IDENTITY(1,1),
+    id                  SERIAL,
     player_id           VARCHAR(50) NOT NULL,
     minute              INT                 ,
     additional_time     INT                 ,
@@ -184,7 +179,7 @@ CREATE TABLE fbref.Shots
     sca_2_player        VARCHAR(50)         ,
     sca_2_type          VARCHAR(50)         ,
     match_id            INT                 ,
-    penalty             BIT                 ,
+    penalty             BOOLEAN             ,
     CONSTRAINT PK_Shots_id
         PRIMARY KEY (id)                    ,
     CONSTRAINT FK_Shots_Matches
@@ -230,31 +225,31 @@ CREATE TABLE fbref.PlayerStatsPassTypes
 
 CREATE TABLE fbref.GoalkeeperStats
 (
-    id                                  INT        IDENTITY(1,1),
+    id                                  SERIAL,
     player_id                           VARCHAR(50)     NOT NULL,
-    age                                 FLOAT(4)                ,
+    age                                 REAL                    ,
     minutes                             INT                     ,
     match_id                            INT             NOT NULL,
     shots_on_target_against             INT                     ,
     goals_against_gk                    INT                     ,
     saves                               INT                     ,
-    save_pct                            FLOAT(3)                ,
-    psxg_gk                             FLOAT(3)                ,
+    save_pct                            REAL                    ,
+    psxg_gk                             REAL                    ,
     passes_completed_launched_gk        INT                     ,
     passes_launched_gk                  INT                     ,
-    passes_pct_launched_gk              FLOAT(3)                ,
+    passes_pct_launched_gk              REAL                    ,
     passes_gk                           INT                     ,
     passes_throws_gk                    INT                     ,
-    pct_passes_launched_gk              FLOAT(3)                ,
-    passes_length_avg_gk                FLOAT(3)                ,
+    pct_passes_launched_gk              REAL                    ,
+    passes_length_avg_gk                REAL                    ,
     goal_kicks                          INT                     ,
-    pct_goal_kicks_launched             FLOAT(3)                ,
-    goal_kick_length_avg                FLOAT(3)                ,
+    pct_goal_kicks_launched             REAL                    ,
+    goal_kick_length_avg                REAL                    ,
     crosses_gk                          INT                     ,
     crosses_stopped_gk                  INT                     ,
-    crosses_stopped_pct_gk              FLOAT(3)                ,
+    crosses_stopped_pct_gk              REAL                    ,
     def_actions_outside_pen_area_gk     INT                     ,
-    avg_distance_def_actions_gk         FLOAT(3)                ,
+    avg_distance_def_actions_gk         REAL                    ,
     CONSTRAINT PK_GoalkeeperStats_id
         PRIMARY KEY (id)                                        ,
     CONSTRAINT FK_GoalkeeperStats_Matches
@@ -281,7 +276,7 @@ CREATE TABLE fbref.PlayerStatsMisc
     ball_recoveries         INT                 ,
     aerials_won             INT                 ,
     aerials_lost            INT                 ,
-    aerials_won_pct         FLOAT(3)            ,
+    aerials_won_pct         REAL                ,
     CONSTRAINT PK_PlayerStatsMisc
         PRIMARY KEY (player_id, match_id)       ,
     CONSTRAINT FK_PlayerStatsMisc_Matches
@@ -300,11 +295,11 @@ CREATE TABLE fbref.PlayerStatsDefActions
     tackles_att_3rd             INT                     ,
     dribble_tackles             INT                     ,
     dribbles_vs                 INT                     ,
-    dribble_tackles_pct         FLOAT(3)                ,
+    dribble_tackles_pct         REAL                    ,
     dribbled_past               INT                     ,
     pressures                   INT                     ,
     pressure_regains            INT                     ,
-    pressure_regain_pct         FLOAT(3)                ,
+    pressure_regain_pct         REAL                    ,
     pressures_def_3rd           INT                     ,
     pressures_mid_3rd           INT                     ,
     pressures_att_3rd           INT                     ,

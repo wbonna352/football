@@ -3,7 +3,7 @@ import pandas as pd
 
 inputs = pd.read_csv('links.csv')
 
-for _, row in inputs.iterrows():
+for _, row in inputs.tail(1).iterrows():
     x = ETLCompetitions(
         season=row['season'],
         league=row['league'],
